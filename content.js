@@ -37,43 +37,14 @@ function init() {
 }
 
 function setupExtension() {
-	// Add extension indicator
-	addExtensionIndicator();
-
-	// Set up observers for dynamic content
-	setupMutationObserver();
-
-	// Apply features based on current settings
-	applyFeatures();
+    // Set up observers for dynamic content
+    setupMutationObserver();
+    
+    // Apply features based on current settings
+    applyFeatures();
 }
 
-function addExtensionIndicator() {
-	// Add a small indicator that the extension is active
-	const indicator = document.createElement("div");
-	indicator.id = "typeracer-mods-indicator";
-	indicator.innerHTML = "🏎️ Mods Active";
-	indicator.style.cssText = `
-        position: fixed;
-        top: 10px;
-        right: 10px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-size: 12px;
-        z-index: 10000;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        transition: opacity 0.3s ease;
-    `;
-
-	document.body.appendChild(indicator);
-
-	// Fade out after 3 seconds
-	setTimeout(() => {
-		indicator.style.opacity = "0.3";
-	}, 3000);
-}
+// Extension indicator removed - no longer needed
 
 function setupMutationObserver() {
 	// Watch for changes in the DOM to handle dynamic content
@@ -148,94 +119,15 @@ function applyFeatures() {
 }
 
 function enableFeature1() {
-	// Feature 1: Focus mode - show only roomSection, hide everything else
-	
-
-	const gameScreen = document.querySelector(".podContainer.gameView");
-	const bodyChildren = document.body.children;
-	console.log("gameScreen", gameScreen);
-
-    // gameScreen.classList.add("focus-content");
-
-    // console.log("bodyChildren", bodyChildren);
-    if (gameScreen) {
-        // Remove gameScreen temporarily
-        const parent = gameScreen.parentElement;
-        const nextSibling = gameScreen.nextSibling;
-        gameScreen.remove();
-        
-        // Hide everything in the body
-        document.body.classList.add("focus-hidden");
-        
-        // Put gameScreen back and make it visible
-        if (nextSibling) {
-            parent.insertBefore(gameScreen, nextSibling);
-        } else {
-            parent.appendChild(gameScreen);
-        }
-        gameScreen.classList.add("focus-content");
-    }
-    
-	
-	// if (gameScreen) {
-	// 	console.log("Found roomSection, applying focus-content first");
-	// 	// First, apply focus-content to roomSection and all its children recursively
-	// 	gameScreen.classList.add("focus-content");
-	// 	const allChildren = gameScreen.querySelectorAll("*");
-	// 	console.log("Applying focus-content to", allChildren.length, "children");
-	// 	allChildren.forEach((child) => {
-	// 		child.classList.add("focus-content");
-	// 	});
-		
-	// 	// Also mark the parent chain to keep it visible
-	// 	let parent = gameScreen.parentElement;
-	// 	while (parent && parent !== document.body) {
-	// 		parent.classList.add("focus-content");
-	// 		parent = parent.parentElement;
-	// 	}
-	// } else {
-	// 	console.log("roomSection not found!");
-	// }
-
-	// // // Now hide all other elements by applying focus-hidden to body children
-	
-	// console.log("Processing", bodyChildren.length, "body children for hiding");
-	
-	// for (let i = 0; i < bodyChildren.length; i++) {
-	// 	const child = bodyChildren[i];
-	// 	// Skip our extension indicator and any element that already has focus-content
-	// 	if (child.id !== "typeracer-mods-indicator" && !child.classList.contains("focus-content")) {
-	// 		console.log("Hiding element:", child.tagName, child.className, child.id);
-	// 		child.classList.add("focus-hidden");
-	// 		// Also apply to children that don't have focus-content
-	// 		const allDescendants = child.querySelectorAll("*");
-	// 		console.log("Hiding", allDescendants.length, "descendants");
-	// 		allDescendants.forEach((descendant) => {
-	// 			if (!descendant.classList.contains("focus-content")) {
-	// 				descendant.classList.add("focus-hidden");
-	// 			}
-	// 		});
-	// 	} else {
-	// 		console.log("Skipping element (keeping visible):", child.tagName, child.className, child.id);
-	// 	}
-	// }
-	
-	console.log("Focus mode setup complete");
+	// Feature 1: Focus mode - Pure CSS approach
+	console.log("Enabling focus mode");
+	document.body.classList.add("focus-mode");
 }
 
 function disableFeature1() {
-	// Remove focus-content class from all elements that have it
-	const focusContentElements = document.querySelectorAll(".focus-content");
-	focusContentElements.forEach((element) => {
-		element.classList.remove("focus-content");
-	});
-
-	// Remove focus-hidden class from all elements that have it
-	const focusHiddenElements = document.querySelectorAll(".focus-hidden");
-	focusHiddenElements.forEach((element) => {
-		element.classList.remove("focus-hidden");
-	});
-
+	// Feature 1: Disable focus mode - Pure CSS approach
+	console.log("Disabling focus mode");
+	document.body.classList.remove("focus-mode");
 }
 
 // Listen for messages from popup

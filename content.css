@@ -1,8 +1,24 @@
-.focus-content {
+/* Focus mode: Hide everything except the game container and its parents */
+body.focus-mode {
+    background-color: black !important;
+}
+
+body.focus-mode * {
+    visibility: hidden !important;
+}
+
+/* Show the game container and all its children */
+body.focus-mode .podContainer.gameView,
+body.focus-mode .podContainer.gameView * {
     visibility: visible !important;
 }
 
-.focus-hidden {
-    visibility: hidden !important;
-    background-color: black !important;
+/* Show all parents of the game container */
+body.focus-mode:has(.podContainer.gameView) {
+    visibility: visible !important;
+}
+
+body.focus-mode *:has(.podContainer.gameView) {
+    visibility: visible !important;
+    background-color: transparent !important;
 }

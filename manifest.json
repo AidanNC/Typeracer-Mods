@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Typeracer Mods",
+  "version": "1.0.0",
+  "description": "A Chrome extension for Typeracer modifications",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://play.typeracer.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Typeracer Mods",
+    "default_icon": {
+      "16": "icons/icon16.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://play.typeracer.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*"],
+      "matches": ["https://play.typeracer.com/*"]
+    }
+  ]
+} 

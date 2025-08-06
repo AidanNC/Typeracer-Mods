@@ -11,6 +11,7 @@ let extensionSettings = {
 
 // Global mutation observer
 let mutationObserver = null;
+let isApplyingFeatures = false;
 
 // Initialize the extension
 init();
@@ -77,21 +78,33 @@ function addExtensionIndicator() {
 function setupMutationObserver() {
 	// Watch for changes in the DOM to handle dynamic content
 	mutationObserver = new MutationObserver(function (mutations) {
+		// Skip if we're currently applying features
+		if (isApplyingFeatures) {
+			return;
+		}
+		
+		let shouldReapply = false;
+		
 		mutations.forEach(function (mutation) {
 			if (mutation.type === "childList") {
-				// Only re-apply if the changes weren't made by our extension
-				const hasExtensionChanges = Array.from(mutation.addedNodes).some(node => 
-					node.classList && (node.classList.contains("focus-content") || node.classList.contains("focus-hidden"))
-				) || Array.from(mutation.removedNodes).some(node => 
-					node.classList && (node.classList.contains("focus-content") || node.classList.contains("focus-hidden"))
+				// Check if this looks like a significant page change (not our modifications)
+				const hasSignificantChanges = Array.from(mutation.addedNodes).some(node => 
+					node.nodeType === Node.ELEMENT_NODE && 
+					!node.classList.contains("focus-content") && 
+					!node.classList.contains("focus-hidden") &&
+					(node.tagName === "DIV" || node.tagName === "SECTION" || node.classList.length > 0)
 				);
 				
-				if (!hasExtensionChanges) {
-					console.log("DOM changed by external source, re-applying features");
-					applyFeatures();
+				if (hasSignificantChanges) {
+					shouldReapply = true;
 				}
 			}
 		});
+		
+		if (shouldReapply) {
+			console.log("Significant DOM change detected, re-applying features");
+			applyFeatures();
+		}
 	});
 
 	mutationObserver.observe(document.body, {
@@ -101,6 +114,15 @@ function setupMutationObserver() {
 }
 
 function applyFeatures() {
+	// Prevent recursive calls
+	if (isApplyingFeatures) {
+		console.log("Already applying features, skipping...");
+		return;
+	}
+	
+	isApplyingFeatures = true;
+	console.log("Starting to apply features...");
+	
 	// Temporarily disconnect observer to prevent infinite loop
 	if (mutationObserver) {
 		mutationObserver.disconnect();
@@ -112,13 +134,17 @@ function applyFeatures() {
 		disableFeature1();
 	}
 	
-	// Reconnect observer after applying features
-	if (mutationObserver) {
-		mutationObserver.observe(document.body, {
-			childList: true,
-			subtree: true,
-		});
-	}
+	// Wait a bit before reconnecting to let DOM settle
+	setTimeout(() => {
+		if (mutationObserver) {
+			mutationObserver.observe(document.body, {
+				childList: true,
+				subtree: true,
+			});
+		}
+		isApplyingFeatures = false;
+		console.log("Features applied, observer reconnected");
+	}, 100);
 }
 
 function enableFeature1() {
